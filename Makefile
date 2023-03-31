@@ -1,25 +1,26 @@
-#compiler name
+# Compiler name
 cc := gcc
 
-#remove command
+# Remove command
 RM := rm -rf
 
-#source files
-SOURCES := mutation-interface.c mutation.c
+# Source files
+SOURCES := lib/mutation.c lib/log.c mutation-interface.c
 
-#object files
+# Object files
 OBJS := $(SOURCES:.c=.o)
 
 
 
-#main target
+# Main target
 main: $(OBJS)
 	$(CC) -shared -g -o libmutation-interface.so $^
 
 %.o: %.c
-	$(CC) -c -g -Wall -Werror -fPIC $< -o $@
+	$(CC) -c -g -Wall -Werror -fPIC -Ilib/ $< -o $@
  
 
 .PHONY: clean
 clean:
 	$(RM) *.o *.so
+	$(RM) lib/*.o lib/*.so
