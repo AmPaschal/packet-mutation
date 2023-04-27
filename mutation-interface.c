@@ -170,6 +170,27 @@ struct packet *mutate(struct packet *original, struct fuzz_options *fuzz_options
                         }
                     }
                 }
+
+                if (isUDP && option.header_type == xUDP) {
+                    if(option.fuzz_field == F_SRC_PORT){
+                        for(int i = 0; i < 2; i++){
+                            *(original->udp + i) = *(option.fuzz_value + i);
+                        }
+                    } else if(option.fuzz_field == F_DST_PORT) {
+                        for(int i = 2; i < 4; i++){
+                            *(original->udp + i) = *(option.fuzz_value - 2 + i);
+                        }
+                    } else if(option.fuzz_field == F_UDP_LEN) {
+                        for(int i = 4; i < 6; i++){
+                            *(original->udp + i) = *(option.fuzz_value - 4 + i);
+                        }
+                    } else if(option.fuzz_field == F_CHECKSUM) {
+                        for(int i = 6; i < 8; i++){
+                            *(original->udp + i) = *(option.fuzz_value - 6 + i);
+                        }
+                    }
+                }
+
                 if (isIPv4 && option.header_type == IPv4) {
                     if (option.fuzz_field == F_VERSION) {
                         char value = (*option.fuzz_value << 4) & 0xF0;
